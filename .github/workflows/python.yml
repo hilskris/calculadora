@@ -1,4 +1,4 @@
-name: Python CI
+name: Pipeline Calculadora Python
 
 on:
   push:
@@ -9,22 +9,23 @@ on:
       - main
 
 jobs:
-  build:
+  liberacion:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar repositorio
-      uses: actions/checkout@v4
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
 
-    - name: Instalar Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.14"  
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Instalar dependencias
-      run: |
-        pip install -r requirements.txt
+      - name: Generar entorno de liberación
+        run: bash scripts/setup_env.sh
 
-    - name: Verificar sintaxis
-      run: |
-        python -m py_compile calculator.py app.py
+      - name: Ejecutar pruebas en entorno de liberación
+        run: bash scripts/test_release.sh
+
+      - name: Generar despliegue
+        run: bash scripts/deploy.sh
